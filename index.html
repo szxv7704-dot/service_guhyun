@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>행정안전부 안내서비스 포털</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+        }
+
+        /* 헤더 */
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 40px 20px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            font-size: 1.1em;
+            opacity: 0.9;
+        }
+
+        /* 이미지 갤러리 */
+        .gallery {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+            padding: 30px;
+            background: #f9f9f9;
+        }
+
+        .gallery-item {
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease;
+        }
+
+        .gallery-item:hover {
+            transform: translateY(-5px);
+        }
+
+        .gallery-item img {
+            width: 100%;
+            height: 250px;
+            object-fit: cover;
+            display: block;
+        }
+
+        /* 검색 섹션 */
+        .search-section {
+            padding: 30px;
+            background: white;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .search-container {
+            max-width: 500px;
+            margin: 0 auto;
+        }
+
+        .search-container label {
+            display: block;
+            margin-bottom: 10px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .search-container input {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #ddd;
+            border-radius: 6px;
+            font-size: 1em;
+            transition: border-color 0.3s;
+        }
+
+        .search-container input:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 5px rgba(102, 126, 234, 0.2);
+        }
+
+        /* 결과 집계 */
+        .result-count {
+            text-align: center;
+            margin-top: 15px;
+            font-size: 0.95em;
+            color: #666;
+            font-weight: 500;
+        }
+
+        /* 카테고리 카드 그리드 */
+        .cards-section {
+            padding: 30px;
+        }
+
+        .cards-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 20px;
+        }
+
+        .category-card {
+            background: white;
+            border-radius: 10px;
+            padding: 25px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+            transition: all 0.3s ease;
+            border-left: 5px solid #667eea;
+            cursor: pointer;
+        }
+
+        .category-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
+        }
+
+        .category-card.민원 {
+            border-left-color: #4a90e2;
+        }
+
+        .category-card.복지 {
+            border-left-color: #f5a623;
+        }
+
+        .category-card.세금 {
+            border-left-color: #7ed321;
+        }
+
+        .category-card.교통 {
+            border-left-color: #bd10e0;
+        }
+
+        .category-card.재난 {
+            border-left-color: #ff0000;
+        }
+
+        .category-card.일자리 {
+            border-left-color: #50e3c2;
+        }
+
+        .category-card.교육 {
+            border-left-color: #b8e986;
+        }
+
+        .card-category {
+            font-size: 0.85em;
+            color: #999;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 8px;
+        }
+
+        .card-title {
+            font-size: 1.5em;
+            font-weight: 700;
+            color: #333;
+            margin-bottom: 15px;
+        }
+
+        .card-count {
+            font-size: 2.5em;
+            font-weight: 700;
+            color: #667eea;
+            margin-bottom: 15px;
+        }
+
+        .card-count-label {
+            font-size: 0.85em;
+            color: #999;
+            margin-bottom: 20px;
+        }
+
+        .card-agency {
+            padding-top: 15px;
+            border-top: 1px solid #e0e0e0;
+        }
+
+        .card-agency-label {
+            font-size: 0.8em;
+            color: #999;
+            text-transform: uppercase;
+            margin-bottom: 5px;
+        }
+
+        .card-agency-name {
+            font-size: 1em;
+            font-weight: 600;
+            color: #333;
+        }
+
+        /* 빈 상태 */
+        .no-results {
+            grid-column: 1 / -1;
+            text-align: center;
+            padding: 60px 20px;
+            color: #999;
+        }
+
+        .no-results p {
+            font-size: 1.1em;
+        }
+
+        /* 반응형 */
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 1.8em;
+            }
+
+            .gallery {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .cards-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- 헤더 -->
+        <div class="header">
+            <h1>🏛️ 행정안전부 안내서비스</h1>
+            <p>국민 생활 밀착형 안내서비스 포털</p>
+        </div>
+
+        <!-- 카드뉴스 갤러리 -->
+        <div class="gallery">
+            <div class="gallery-item">
+                <img src="/images/카드뉴스1.png" alt="카드뉴스 1">
+            </div>
+            <div class="gallery-item">
+                <img src="/images/카드뉴스2.png" alt="카드뉴스 2">
+            </div>
+            <div class="gallery-item">
+                <img src="/images/카드뉴스3.png" alt="카드뉴스 3">
+            </div>
+            <div class="gallery-item">
+                <img src="/images/카드뉴스4.png" alt="카드뉴스 4">
+            </div>
+        </div>
+
+        <!-- 검색 섹션 -->
+        <div class="search-section">
+            <div class="search-container">
+                <label for="searchInput">🔍 카테고리 또는 기관명으로 검색</label>
+                <input 
+                    type="text" 
+                    id="searchInput" 
+                    placeholder="예: 민원, 복지, 행정안전부"
+                >
+                <div class="result-count">
+                    전체 <strong id="resultCount">7</strong>개 카테고리
+                </div>
+            </div>
+        </div>
+
+        <!-- 카테고리 카드 그리드 -->
+        <div class="cards-section">
+            <div class="cards-grid" id="cardsGrid">
+                <!-- JavaScript로 동적 생성 -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 카테고리별 데이터 (안내서비스_목록.json 기반)
+        const categoryData = [
+            {
+                category: "민원",
+                count: 5,
+                agency: "국토교통부"
+            },
+            {
+                category: "복지",
+                count: 4,
+                agency: "보건복지부"
+            },
+            {
+                category: "세금",
+                count: 3,
+                agency: "지자체"
+            },
+            {
+                category: "교통",
+                count: 3,
+                agency: "국토교통부"
+            },
+            {
+                category: "재난",
+                count: 3,
+                agency: "행정안전부"
+            },
+            {
+                category: "일자리",
+                count: 3,
+                agency: "지자체"
+            },
+            {
+                category: "교육",
+                count: 3,
+                agency: "국토교통부"
+            }
+        ];
+
+        const cardsGrid = document.getElementById('cardsGrid');
+        const searchInput = document.getElementById('searchInput');
+        const resultCount = document.getElementById('resultCount');
+
+        // 초기 카드 렌더링
+        function renderCards(data) {
+            cardsGrid.innerHTML = '';
+
+            if (data.length === 0) {
+                cardsGrid.innerHTML = `
+                    <div class="no-results">
+                        <p>검색 결과가 없습니다.</p>
+                    </div>
+                `;
+                resultCount.textContent = '0';
+                return;
+            }
+
+            data.forEach(item => {
+                const card = document.createElement('div');
+                card.className = `category-card ${item.category}`;
+                card.innerHTML = `
+                    <div class="card-category">${item.category}</div>
+                    <div class="card-title">${item.category}</div>
+                    <div class="card-count">${item.count}</div>
+                    <div class="card-count-label">건의 서비스</div>
+                    <div class="card-agency">
+                        <div class="card-agency-label">대표 기관</div>
+                        <div class="card-agency-name">${item.agency}</div>
+                    </div>
+                `;
+                cardsGrid.appendChild(card);
+            });
+
+            resultCount.textContent = data.length;
+        }
+
+        // 필터링 함수
+        function filterCards() {
+            const searchTerm = searchInput.value.toLowerCase().trim();
+
+            if (searchTerm === '') {
+                renderCards(categoryData);
+                return;
+            }
+
+            const filtered = categoryData.filter(item => {
+                return (
+                    item.category.toLowerCase().includes(searchTerm) ||
+                    item.agency.toLowerCase().includes(searchTerm)
+                );
+            });
+
+            renderCards(filtered);
+        }
+
+        // 이벤트 리스너
+        searchInput.addEventListener('input', filterCards);
+
+        // 초기 렌더링
+        renderCards(categoryData);
+    </script>
+</body>
+</html>
